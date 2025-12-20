@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctors Booking System</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-stethoscope"></i>
+                <span>DocBook</span>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <div class="nav-user-info" id="nav-user-info" style="display: none;">
+                    <span id="nav-username"></span>
+                    <button class="btn btn-outline" onclick="logout()">Logout</button>
+                </div>
+                <div class="nav-auth" id="nav-auth">
+                    <button class="btn btn-outline" onclick="showLogin()">Login</button>
+                    <button class="btn btn-primary" onclick="showRegister()">Register</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Welcome Page -->
+        <div class="page" id="welcome-page">
+            <div class="hero">
+                <div class="hero-content">
+                    <h1>Welcome to DocBook</h1>
+                    <p>Your trusted platform for booking medical appointments</p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary btn-large" onclick="showRegister()">Get Started</button>
+                        <button class="btn btn-outline btn-large" onclick="showLogin()">Login</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Login Page -->
+        <div class="page" id="login-page" style="display: none;">
+            <div class="auth-container">
+                <div class="auth-form">
+                    <h2>Login</h2>
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label for="login-email">Email</label>
+                            <input type="email" id="login-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Password</label>
+                            <input type="password" id="login-password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">Login</button>
+                    </form>
+                    <div class="auth-footer">
+                        <p>Don't have an account? <a href="#" onclick="showRegister()">Register here</a></p>
+                    </div>
+                    <div class="message" id="login-message"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Register Page -->
+        <div class="page" id="register-page" style="display: none;">
+            <div class="auth-container">
+                <div class="auth-form">
+                    <h2>Register</h2>
+                    <form id="register-form">
+                        <div class="form-group">
+                            <label for="register-name">Full Name</label>
+                            <input type="text" id="register-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-email">Email</label>
+                            <input type="email" id="register-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-password">Password</label>
+                            <input type="password" id="register-password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-role">Role</label>
+                            <select id="register-role" required>
+                                <option value="">Select Role</option>
+                                <option value="patient">Patient</option>
+                                <option value="doctor">Doctor</option>
+                            </select>
+                        </div>
+                        <div class="doctor-fields" id="doctor-fields" style="display: none;">
+                            <div class="form-group">
+                                <label for="register-specialty">Specialty</label>
+                                <select id="register-specialty">
+                                    <option value="">Select Specialty</option>
+                                    <option value="Cardiology">Cardiology</option>
+                                    <option value="Dermatology">Dermatology</option>
+                                    <option value="Neurology">Neurology</option>
+                                    <option value="Pediatrics">Pediatrics</option>
+                                    <option value="Orthopedics">Orthopedics</option>
+                                    <option value="General Practice">General Practice</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="register-location">Location</label>
+                                <input type="text" id="register-location" placeholder="City, State">
+                            </div>
+                            <div class="form-group">
+                                <label for="register-bio">Bio</label>
+                                <textarea id="register-bio" placeholder="Brief description about yourself"></textarea>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">Register</button>
+                    </form>
+                    <div class="auth-footer">
+                        <p>Already have an account? <a href="#" onclick="showLogin()">Login here</a></p>
+                    </div>
+                    <div class="message" id="register-message"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Patient Dashboard -->
+        <div class="page" id="patient-dashboard" style="display: none;">
+            <div class="dashboard-header">
+                <h1>Patient Dashboard</h1>
+                <p>Welcome back, <span id="patient-name"></span>!</p>
+            </div>
+            
+            <div class="dashboard-tabs">
+                <button class="tab-btn active" onclick="showTab('find-doctors')">Find Doctors</button>
+                <button class="tab-btn" onclick="showTab('my-appointments')">My Appointments</button>
+                <button class="tab-btn" onclick="showTab('appointment-history')">History</button>
+            </div>
+
+            <!-- Find Doctors Tab -->
+            <div class="tab-content active" id="find-doctors">
+                <div class="search-section">
+                    <div class="search-bar">
+                        <input type="text" id="doctor-search" placeholder="Search by name, specialty, or location...">
+                        <button class="btn btn-primary" onclick="searchDoctors()">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                    <div class="filters">
+                        <select id="specialty-filter">
+                            <option value="">All Specialties</option>
+                            <option value="Cardiology">Cardiology</option>
+                            <option value="Dermatology">Dermatology</option>
+                            <option value="Neurology">Neurology</option>
+                            <option value="Pediatrics">Pediatrics</option>
+                            <option value="Orthopedics">Orthopedics</option>
+                            <option value="General Practice">General Practice</option>
+                        </select>
+                        <input type="text" id="location-filter" placeholder="Filter by location">
+                        <button class="btn btn-outline" onclick="clearFilters()">Clear</button>
+                    </div>
+                </div>
+                <div class="doctors-grid" id="doctors-grid">
+                    <!-- Doctors will be populated here -->
+                </div>
+            </div>
+
+            <!-- My Appointments Tab -->
+            <div class="tab-content" id="my-appointments">
+                <div class="appointments-list" id="patient-appointments">
+                    <!-- Appointments will be populated here -->
+                </div>
+            </div>
+
+            <!-- Appointment History Tab -->
+            <div class="tab-content" id="appointment-history">
+                <div class="appointments-list" id="patient-history">
+                    <!-- History will be populated here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Doctor Dashboard -->
+        <div class="page" id="doctor-dashboard" style="display: none;">
+            <div class="dashboard-header">
+                <h1>Doctor Dashboard</h1>
+                <p>Welcome, Dr. <span id="doctor-name"></span>!</p>
+            </div>
+            
+            <div class="dashboard-tabs">
+                <button class="tab-btn active" onclick="showTab('doctor-profile')">Profile</button>
+                <button class="tab-btn" onclick="showTab('doctor-appointments')">Appointments</button>
+                <button class="tab-btn" onclick="showTab('doctor-availability')">Availability</button>
+                <button class="tab-btn" onclick="showTab('doctor-history')">History</button>
+            </div>
+
+            <!-- Profile Tab -->
+            <div class="tab-content active" id="doctor-profile">
+                <div class="profile-form">
+                    <h3>Profile Information</h3>
+                    <form id="doctor-profile-form">
+                        <div class="form-group">
+                            <label for="doctor-bio">Bio</label>
+                            <textarea id="doctor-bio" placeholder="Tell patients about yourself"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="doctor-specialty-edit">Specialty</label>
+                            <select id="doctor-specialty-edit">
+                                <option value="Cardiology">Cardiology</option>
+                                <option value="Dermatology">Dermatology</option>
+                                <option value="Neurology">Neurology</option>
+                                <option value="Pediatrics">Pediatrics</option>
+                                <option value="Orthopedics">Orthopedics</option>
+                                <option value="General Practice">General Practice</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="doctor-location-edit">Location</label>
+                            <input type="text" id="doctor-location-edit" placeholder="City, State">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update Profile</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Appointments Tab -->
+            <div class="tab-content" id="doctor-appointments">
+                <div class="appointments-list" id="doctor-appointments-list">
+                    <!-- Appointments will be populated here -->
+                </div>
+            </div>
+
+            <!-- Availability Tab -->
+            <div class="tab-content" id="doctor-availability">
+                <div class="availability-form">
+                    <h3>Set Your Availability</h3>
+                    <div class="availability-grid" id="availability-grid">
+                        <!-- Availability slots will be populated here -->
+                    </div>
+                    <button class="btn btn-primary" onclick="saveAvailability()">Save Availability</button>
+                </div>
+            </div>
+
+            <!-- History Tab -->
+            <div class="tab-content" id="doctor-history">
+                <div class="appointments-list" id="doctor-history-list">
+                    <!-- History will be populated here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Dashboard -->
+        <div class="page" id="admin-dashboard" style="display: none;">
+            <div class="dashboard-header">
+                <h1>Admin Dashboard</h1>
+                <p>System Administration</p>
+            </div>
+            
+            <div class="dashboard-tabs">
+                <button class="tab-btn active" onclick="showTab('admin-users')">Users</button>
+                <button class="tab-btn" onclick="showTab('admin-doctors')">Doctor Approvals</button>
+                <button class="tab-btn" onclick="showTab('admin-appointments')">All Appointments</button>
+            </div>
+
+            <!-- Users Tab -->
+            <div class="tab-content active" id="admin-users">
+                <div class="users-list" id="admin-users-list">
+                    <!-- Users will be populated here -->
+                </div>
+            </div>
+
+            <!-- Doctor Approvals Tab -->
+            <div class="tab-content" id="admin-doctors">
+                <div class="doctors-approval-list" id="admin-doctors-list">
+                    <!-- Pending doctors will be populated here -->
+                </div>
+            </div>
+
+            <!-- All Appointments Tab -->
+            <div class="tab-content" id="admin-appointments">
+                <div class="appointments-list" id="admin-appointments-list">
+                    <!-- All appointments will be populated here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modals -->
+    <div class="modal" id="booking-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Book Appointment</h3>
+                <span class="close" onclick="closeModal('booking-modal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="booking-form">
+                    <div class="form-group">
+                        <label>Doctor</label>
+                        <p id="booking-doctor-name"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="booking-date">Date</label>
+                        <input type="date" id="booking-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="booking-time">Time</label>
+                        <select id="booking-time" required>
+                            <!-- Time slots will be populated -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="booking-reason">Reason for Visit</label>
+                        <textarea id="booking-reason" placeholder="Brief description of your concern"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline" onclick="closeModal('booking-modal')">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Book Appointment</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="reschedule-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Reschedule Appointment</h3>
+                <span class="close" onclick="closeModal('reschedule-modal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="reschedule-form">
+                    <div class="form-group">
+                        <label for="reschedule-date">New Date</label>
+                        <input type="date" id="reschedule-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reschedule-time">New Time</label>
+                        <select id="reschedule-time" required>
+                            <!-- Time slots will be populated -->
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline" onclick="closeModal('reschedule-modal')">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Reschedule</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="js/storage.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/patient.js"></script>
+    <script src="js/doctor.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
